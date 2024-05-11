@@ -3,16 +3,22 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom';
 
+
+
+//login component functionality
 export default function Login() {
 
+    //useState hook used for get data form input filed if any changes it reassign value 
     const [data, setData] = useState({
         email: "",
         password: ""
     });
     const [error, setError] = useState("");
 
+    //useNavigate hook used to when responce is ok  navigate to home page
     const navigate = useNavigate();
 
+    //this function destucture the user inputed data and send value to setData function 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setData({ ...data, [name]: value });
@@ -25,8 +31,13 @@ export default function Login() {
         try {
             const url = "/api/v1/users/login"
             console.log(data)
+            //send post request using axios to backend
+            //we use axios becous it add extra functionality
             const { responce } = await axios.post(url, data)
+
+            //we post request responce catched here
                 .then((responce) => {
+                    //if resonce is ok we navigate to home 
                     if (responce.data.statusCode == 200) navigate("/home")
                     setError(responce.data.error)
                 })
@@ -36,6 +47,9 @@ export default function Login() {
             setData("Post Error")
         }
     }
+
+
+    //return login component
 
     return (
         <div className="max-w-md mx-auto my-8 p-6 bg-white rounded-lg shadow-lg">

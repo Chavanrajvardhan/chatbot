@@ -2,6 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 
 
+//return Login component main.jsx file for routing 
+
 export default function Home() {
     return (
         <div className="mx-auto w-full max-w-7xl">

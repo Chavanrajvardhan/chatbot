@@ -22,18 +22,19 @@ const generateAccessAndRefereshTokens = async (userId) => {
 }
 
 const registerUser = asyncHandler(async (req, res) => {
-    // get user details from frontend
-    // validation - not empty
-    // check if user already exists: username, email
-    // create user object - create entry in db
-    // remove password and refresh token field from response
-    // check for user creation
-    // return res
+   
+ 
+   
+   
+    
+ 
+  
 
-
+     // get user details from frontend
     const { fullName, email, username, password, contact } = req.body
     console.log("email: ", email);
 
+       // validation - not empty
     if (
         [fullName, email, username, password, contact].some((field) => field?.trim() === "")
     ) {
@@ -42,14 +43,7 @@ const registerUser = asyncHandler(async (req, res) => {
         })
     }
 
-    // Validate email using regular expression
-    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // if (!emailRegex.test(email)) {
-    //     return res.json({
-    //         error: "Please enter a valid email address",
-    //     });
-    // }
-
+  
     const contactRegex = /^\d{10}$/;
     if (!contactRegex.test(contact)) {
         return res.json({
@@ -57,8 +51,9 @@ const registerUser = asyncHandler(async (req, res) => {
         });
     }
 
+     // check if user already exists:  email
     const existedUser = await User.findOne({
-        $or: [{ email }, { username }]
+        $or: [{ email }]
     })
 
     if (existedUser) {
@@ -68,7 +63,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
     //console.log(req.files);
 
-
+ // create user object - create entry in db
     const user = await User.create({
         username,
         fullName,
@@ -77,10 +72,12 @@ const registerUser = asyncHandler(async (req, res) => {
         contact
     })
 
+    // remove password and refresh token field from response
     const createdUser = await User.findById(user._id).select(
         "-password -refreshToken"
     )
 
+       // check for user creation
     if (!createdUser) {
         // throw new ApiError(500, "Something went wrong while registering the user")
         return res.json({
@@ -88,6 +85,7 @@ const registerUser = asyncHandler(async (req, res) => {
         })
     }
 
+      // return responce to frontend
     return res.status(201).json(
         new ApiResponse(200, createdUser, "User registered Successfully")
     )
@@ -95,13 +93,9 @@ const registerUser = asyncHandler(async (req, res) => {
 })
 
 const loginUser = asyncHandler(async (req, res) => {
-    // req body -> data
-    // username or email
-    //find the user
-    //password check
-    //access and referesh token
-    //send cookie
+   
 
+     // req body -> data
     const { email, password } = req.body
 
     // if (!username && !email) {
@@ -111,11 +105,12 @@ const loginUser = asyncHandler(async (req, res) => {
     // Here is an alternative of above code based on logic discussed in video:
     if (!email) {
         return res.json({
-            error: "Username or email required"
+            error: "email is required"
         })
 
     }
 
+    
     const user = await User.findOne({
         $or: [{ email }]
     })
@@ -126,6 +121,7 @@ const loginUser = asyncHandler(async (req, res) => {
         })
     }
 
+    //password check
     const isPasswordValid = await user.isPasswordCorrect(password)
 
     if (!isPasswordValid) {
@@ -136,6 +132,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
     }
 
+     //access and referesh token
     const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(user._id)
 
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
@@ -146,6 +143,7 @@ const loginUser = asyncHandler(async (req, res) => {
         sameSite: 'None'
     }
 
+      //send cookie with responce
     return res
         .status(200)
         .cookie("accessToken", accessToken, options)

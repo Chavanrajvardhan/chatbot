@@ -10,8 +10,8 @@ import Signup from './components/Signup/Signup.jsx'
 
 
 
-const user = localStorage.getItem("accessToken");
 
+// we route here all components using react-router-dom 
 const router = createBrowserRouter(
 
   createRoutesFromElements(

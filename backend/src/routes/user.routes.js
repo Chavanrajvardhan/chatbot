@@ -6,7 +6,7 @@ import {
 
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
-
+//routes for handle request comming from frontend 
 const router = Router()
 
 router.route("/register").post(

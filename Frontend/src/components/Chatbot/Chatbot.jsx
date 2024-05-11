@@ -1,9 +1,18 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 
+
+
+// this is chatbot functionality
 function Chatbot() {
+
+    //react hook used to get data as a question and reflect it on UI State
     const [question, setQuestion] = useState("");
+
+    //react hook used to store post data that are comming from post reqest 
     const [answer, setAnswer] = useState("");
+
+    //this hook used for to genrate answer
     const [generatingAnswer, setGeneratingAnswer] = useState(false);
 
     async function generateAnswer(e) {
@@ -11,6 +20,7 @@ function Chatbot() {
         e.preventDefault();
         setAnswer("Loading your answer... \n It might take upto 10 seconds");
         try {
+            //we fetch the data from googlAPI 
             const response = await fetch(
                 `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT}`,
                 {
@@ -28,11 +38,14 @@ function Chatbot() {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
+            // fetch data convert into json formate  and store in data vairable
             const data = await response.json();
-
+            
+            //
             if (data && data.candidates && data.candidates.length > 0) {
-                const generatedContent =
-                    data.candidates[0].content.parts[0].text;
+
+                // in data object at a 0th postion we got our ans
+                const generatedContent = data.candidates[0].content.parts[0].text;
                 setAnswer(generatedContent);
             } else {
                 throw new Error("Invalid response format!");
@@ -45,7 +58,7 @@ function Chatbot() {
         setGeneratingAnswer(false);
     }
 
-
+////return Chatbot component main.jsx file for routing 
     return (
         <>
 
@@ -76,7 +89,6 @@ function Chatbot() {
             </div>
         </>
     );
-
 
 }
 export default Chatbot;

@@ -5,6 +5,8 @@ import axios from 'axios'
 
 function Signup() {
 
+    //hook used for get inputed filed from user if any changes it re-render setdata function and assign new values
+
     const [data, setData] = useState({
         username: "",
         fullName: "",
@@ -21,6 +23,7 @@ function Signup() {
 
     const navigate = useNavigate('')
 
+    //send inputed value to setData 
     const handelChange = ({ currentTarget: input }) => {
         setData({ ...data, [input.name]: input.value })
     }
@@ -32,9 +35,12 @@ function Signup() {
         try {
             const url = "/api/v1/users/register"
             console.log(data)
+
+            //send post request to register url 
             const {responce} = await axios.post(url,data) 
             .then((responce) => {
                 console.log(responce.data.statusCode)
+                //if status is ok navigate to " /" as a login page
                 if(responce.data.statusCode == 200) navigate("/")
                 setError(responce.data.error)
             })
@@ -45,10 +51,13 @@ function Signup() {
         }
     }
 
+
+//return Sigunp component main.jsx file for routing 
     return (
         <div className="max-w-md mx-auto my-8 p-6 bg-white rounded-lg shadow-lg">
             <h2 className="text-2xl font-semibold mb-4">Register</h2>
             <form
+            //when we click on submit button we go to handleSubmit
             onSubmit= {handleSubmit}
             >
                 <div className="mb-4">
